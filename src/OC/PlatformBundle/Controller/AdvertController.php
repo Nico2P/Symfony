@@ -12,7 +12,12 @@ class AdvertController extends Controller
 {
     public function indexAction($page)
     {
+        //Test service
 
+        $mailer = $this->container->get('mailer');
+
+
+        // Test service
 
         $listAdverts = array(
             array(
