@@ -3,6 +3,7 @@
 namespace OC\PlatformBundle\Controller;
 
 
+use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\OCPlatformBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -61,13 +62,25 @@ class AdvertController extends Controller
 
     public function addAction(Request $request)
     {
+
+        $advert = new Advert();
+        $advert->setTitle('titre');
+        $advert->setAuthor('auteur');
+        $advert->setContent('Recherche développeur Symphony débutant sur lyon.');
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($advert);
+
+        $em->flush();
+
         if ($request->isMethod('POST')) {
             $request ->getSession()->addFlash()->add('notice', 'Annonce bien enregistée.');
 
-            return $this->redirectToRoute('oc_platform_view',array('id' => 5));
+            return $this->redirectToRoute('oc_platform_view',array('id' => $advert->getId()));
         }
 
-        return $this->render('OCPlatformBundle:Advert:add.html.twig');
+        return $this->render('OCPlatformBundle:Advert:add.html.twig', array('advert' => $advert));
     }
 
     public function editAction ($id, Request $request)

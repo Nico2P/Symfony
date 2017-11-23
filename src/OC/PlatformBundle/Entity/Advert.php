@@ -40,7 +40,6 @@ class Advert
      *
      * @ORM\Column(name="author", type="string", length=255)
      */
-
     private $author;
 
     /**
@@ -54,7 +53,6 @@ class Advert
      * @ORM\Column(name="published", type="boolean")
      */
     private $published = true;
-
 
     public function __construct()
     {
@@ -97,22 +95,14 @@ class Advert
     }
 
     /**
-     * Set title
-     *
      * @param string $title
-     *
-     * @return Advert
      */
     public function setTitle($title)
     {
         $this->title = $title;
-
-        return $this;
     }
 
     /**
-     * Get title
-     *
      * @return string
      */
     public function getTitle()
@@ -121,22 +111,13 @@ class Advert
     }
 
     /**
-     * Set author
-     *
      * @param string $author
-     *
-     * @return Advert
      */
     public function setAuthor($author)
     {
-        $this->title = $author;
-
-        return $this;
+        $this->author = $author;
     }
-
     /**
-     * Get author
-     *
      * @return string
      */
     public function getAuthor()
