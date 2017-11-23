@@ -84,7 +84,7 @@ class AdvertController extends Controller
         $advert->setAuthor('Alexandre');
         $advert->setContent('Recherche développeur Symphony débutant sur lyon.');
 
-        $listSkills = $em->getRepository('OCPlateformBundle:Skill')->findAll();
+        $listSkills = $em->getRepository('OCPlatformBundle:Skill')->findAll();
 
         foreach ($listSkills as $skill) {
             $advertSkill = new AdvertSkill();
