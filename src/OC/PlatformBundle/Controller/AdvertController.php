@@ -5,6 +5,7 @@ namespace OC\PlatformBundle\Controller;
 
 use OC\PlatformBundle\OCPlatformBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -13,11 +14,12 @@ class AdvertController extends Controller
     public function indexAction($page)
     {
         //Test service
-
-        $mailer = $this->container->get('mailer');
-
-
+        // $mailer = $this->container->get('mailer');
         // Test service
+
+        if ($page < 1) {
+            throw new NotFoundHttpException('Page "' .$page. '"inexistante.');
+        }
 
         $listAdverts = array(
             array(

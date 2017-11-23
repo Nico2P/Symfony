@@ -54,7 +54,7 @@ class Advert
      * @ORM\Column(name="published", type="boolean")
      */
     private $published = true;
-    
+
 
     public function __construct()
     {
