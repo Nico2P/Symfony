@@ -38,6 +38,14 @@ class Advert
     /**
      * @var string
      *
+     * @ORM\Column(name="author", type="string", length=255)
+     */
+
+    private $author;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="content", type="text")
      */
     private $content;
@@ -46,6 +54,12 @@ class Advert
      * @ORM\Column(name="published", type="boolean")
      */
     private $published = true;
+    
+
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
 
 
     /**
@@ -104,6 +118,30 @@ class Advert
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set author
+     *
+     * @param string $author
+     *
+     * @return Advert
+     */
+    public function setAuthor($author)
+    {
+        $this->title = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
     /**
