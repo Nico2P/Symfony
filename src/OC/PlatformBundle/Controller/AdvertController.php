@@ -7,9 +7,7 @@ use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\Entity\AdvertSkill;
 use OC\PlatformBundle\Entity\Application;
 use OC\PlatformBundle\Entity\Image;
-use OC\PlatformBundle\OCPlatformBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -17,9 +15,6 @@ class AdvertController extends Controller
 {
     public function indexAction($page)
     {
-        //Test service
-        // $mailer = $this->container->get('mailer');
-        // Test service
 
         if ($page < 1) {
             throw new NotFoundHttpException('Page "' .$page. '"inexistante.');
@@ -77,36 +72,60 @@ class AdvertController extends Controller
 
     public function addAction(Request $request)
     {
+
         $em = $this->getDoctrine()->getManager();
 
         $advert = new Advert();
-        $advert->setTitle('Recherche développeur Symfony');
+        $advert->setTitle('Recherche développeur Symfony.');
         $advert->setAuthor('Alexandre');
-        $advert->setContent('Recherche développeur Symphony débutant sur lyon.');
+        $advert->setContent("Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…");
+
+        $image = new Image();
+        $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
+        $image->setAlt('Job de rêve');
+
+        $advert->setImage($image);
+
+        $application1 = new Application();
+        $application1->setAuthor('Marine');
+        $application1->setContent("J'ai toutes les qualités requises.");
+
+        $application2 = new Application();
+        $application2->setAuthor('Pierre');
+        $application2->setContent("Je suis très motivé.");
+
+        $application1->setAdvert($advert);
+        $application2->setAdvert($advert);
 
         $listSkills = $em->getRepository('OCPlatformBundle:Skill')->findAll();
 
         foreach ($listSkills as $skill) {
+
             $advertSkill = new AdvertSkill();
 
             $advertSkill->setAdvert($advert);
+
             $advertSkill->setSkill($skill);
+
             $advertSkill->setLevel('Expert');
 
             $em->persist($advertSkill);
         }
 
-
         $em->persist($advert);
+
+        $em->persist($application1);
+        $em->persist($application2);
+
         $em->flush();
 
         if ($request->isMethod('POST')) {
-            $request ->getSession()->addFlash()->add('notice', 'Annonce bien enregistée.');
+            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
-            return $this->redirectToRoute('oc_platform_view',array('id' => $advert->getId()));
+            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
         }
 
-        return $this->render('OCPlatformBundle:Advert:add.html.twig', array('advert' => $advert));
+        return $this->render('OCPlatformBundle:Advert:add.html.twig');
     }
 
     public function editAction ($id, Request $request)
