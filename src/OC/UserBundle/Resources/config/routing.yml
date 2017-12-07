@@ -1,0 +1,11 @@
+login:
+    path: /login
+    defaults:
+        -controller: OCUserBundle:Security:login
+
+login_check:
+    path: /login_check
+
+logout:
+    path: /logout
+

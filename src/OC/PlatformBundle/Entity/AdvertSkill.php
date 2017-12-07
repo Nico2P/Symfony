@@ -57,14 +57,10 @@ class AdvertSkill
      * Set level
      *
      * @param string $level
-     *
-     * @return AdvertSkill
      */
     public function setLevel($level)
     {
         $this->level = $level;
-
-        return $this;
     }
 
     /**
@@ -79,16 +75,11 @@ class AdvertSkill
 
     /**
      * Set advert
-     *
      * @param string $advert
-     *
-     * @return AdvertSkill
      */
     public function setAdvert($advert)
     {
         $this->advert = $advert;
-
-        return $this;
     }
 
     /**
@@ -105,14 +96,10 @@ class AdvertSkill
      * Set skill
      *
      * @param string $skill
-     *
-     * @return AdvertSkill
      */
     public function setSkill($skill)
     {
         $this->skill = $skill;
-
-        return $this;
     }
 
     /**

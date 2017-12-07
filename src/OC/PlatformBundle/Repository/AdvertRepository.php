@@ -4,6 +4,7 @@ namespace OC\PlatformBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * AdvertRepository
@@ -13,6 +14,19 @@ use Doctrine\ORM\QueryBuilder;
  */
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function getAdvertBefore(\DateTime $date)
+    {
+        return $this->createQueryBuilder('a')
+        ->where('a.updatedAt <= :date')
+        ->orWhere('a.updatedAt IS NULL AND a.date <= :date' )
+        ->andWhere('a.applications IS EMPTY')
+        ->setParameter('date', $date)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
     public function getAdvertWithCategories(array $categoryNames)
     {
         $qb = $this->createQueryBuilder('a');
@@ -26,6 +40,35 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
         return $qb
             ->getQuery()
             ->getResult()
+            ;
+    }
+
+    public function getAdverts($page, $nbPerPage)
+    {
+        $query = $this->createQueryBuilder('a')
+            ->leftJoin('a.image', "i")
+            ->addSelect('i')
+            ->leftJoin('a.categories', 'c')
+            ->addSelect('c')
+            ->orderBy('a.date', 'desc')
+            ->getQuery()
+            ;
+
+        $query
+            ->setFirstResult(($page-1)* $nbPerPage)
+            ->setMaxResults($nbPerPage)
+            ;
+
+        return new Paginator($query, true);
+    }
+
+
+    protected function whereCurrentYear(QueryBuilder $qb)
+    {
+        $qb
+            ->andWhere('a.date BETWEEN :start AND :end')
+            ->setParameter('start', new \DateTime(date("Y") . '-01-01'))
+            ->setParameter('end', new \DateTime(date("Y") . '-12-31'))
             ;
     }
 }
