@@ -43,6 +43,20 @@ services:
             tags:
                 - { name: validator.constraint_validator, alias: oc_platform_antiflood }
 
+    oc_platform.bigbrother.message_notificator:
+            class: OC\PlatformBundle\Bigbrother\MessageNotificator
+            arguments:
+            - "@mailer"
+
+    oc_platform.bigbrother.message_listener:
+            class: OC\PlatformBundle\Bigbrother\MessageListener
+            arguments:
+            - "@oc_platform.bigbrother.message_notificator"
+            - ["alexandre","marine","pierre"] # liste totalement arbitraire
+            tags:
+                - { name: kernel.event_listener, event: oc_platform.post_message, method: processMessage }
+
+
 #    oc_platform.example:
 #        class: OC\PlatformBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]

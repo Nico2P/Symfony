@@ -1,9 +1,14 @@
 <?php
 // src/OC/PlatformBundle/Controller/AdvertController.php
 namespace OC\PlatformBundle\Controller;
+
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Event\MessagePostEvent;
+use OC\PlatformBundle\Event\PlatformEvents;
 use OC\PlatformBundle\Form\AdvertEditType;
 use OC\PlatformBundle\Form\AdvertType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,16 +43,15 @@ class AdvertController extends Controller
             'page'        => $page,
         ));
     }
-    public function viewAction($id)
+
+
+    /**
+     * @ParamConverter("advert", options={"mapping": {"advert_id": "id"}})
+     */
+    public function viewAction(Advert $advert)
     {
         $em = $this->getDoctrine()->getManager();
-        // Pour récupérer une seule annonce, on utilise la méthode find($id)
-        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
-        // $advert est donc une instance de OC\PlatformBundle\Entity\Advert
-        // ou null si l'id $id n'existe pas, d'où ce if :
-        if (null === $advert) {
-            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-        }
+
         // Récupération de la liste des candidatures de l'annonce
         $listApplications = $em
             ->getRepository('OCPlatformBundle:Application')
@@ -77,6 +81,10 @@ class AdvertController extends Controller
         $advert = new Advert();
         $form   = $this->get('form.factory')->create(AdvertType::class, $advert);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+            $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
+            $this->get('event_dispatcher')->dispatch(PlatformEvents::POST_MESSAGE, $event);
+            $advert->setContent($event->getMessage());
             $em = $this->getDoctrine()->getManager();
             $em->persist($advert);
             $em->flush();

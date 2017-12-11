@@ -8,6 +8,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use OC\UserBundle\Entity\User;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Table(name="advert")
@@ -96,6 +98,8 @@ class Advert
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
      */
     private $slug;
+
+    private $user;
 
 
 
@@ -329,5 +333,12 @@ class Advert
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    public function getUser()
+    {
+        $user = new User();
+        $user->setUsername($this->getAuthor());
+        return $user;
     }
 }
